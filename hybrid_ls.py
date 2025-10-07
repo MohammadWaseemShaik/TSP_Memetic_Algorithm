@@ -1,35 +1,37 @@
 import random
-from distance_fun import total_dis
+from distance_fun import total_distance
 
-def two_opt_once(tour, cities):
+def two_opt_once(tour, dist_matrix, attempts=10):
     best = tour[:]
-    best_dist = total_dis(best, cities)
+    best_len = total_distance(best, dist_matrix)
     n = len(tour)
-    for _ in range(10):
+    for _ in range(attempts):
         i, j = sorted(random.sample(range(n), 2))
         if j - i <= 1:
             continue
         new_tour = best[:i] + best[i:j][::-1] + best[j:]
-        new_dist = total_dis(new_tour, cities)
-        if new_dist < best_dist:
+        new_len = total_distance(new_tour, dist_matrix)
+        if new_len < best_len:
             return new_tour
     return best
 
-def lin_kernighan_once(tour, cities):
-    n = len(tour)
+
+def lin_kernighan_once(tour, dist_matrix, attempts=5):
     best = tour[:]
-    best_dist = total_dis(best, cities)
-    for _ in range(5):
+    best_len = total_distance(best, dist_matrix)
+    n = len(tour)
+    for _ in range(attempts):
         a, b, c = sorted(random.sample(range(n), 3))
         new_tour = best[:a] + best[a:b][::-1] + best[b:c][::-1] + best[c:]
-        new_dist = total_dis(new_tour, cities)
-        if new_dist < best_dist:
+        new_len = total_distance(new_tour, dist_matrix)
+        if new_len < best_len:
             return new_tour
     return best
 
-def hybrid_local_search(tour, cities):
+
+def hybrid_local_search(tour, dist_matrix, depth=2):
     improved = tour[:]
-    for _ in range(3):
-        improved = two_opt_once(improved, cities)
-        improved = lin_kernighan_once(improved, cities)
+    for _ in range(depth):
+        improved = two_opt_once(improved, dist_matrix)
+        improved = lin_kernighan_once(improved, dist_matrix)
     return improved
