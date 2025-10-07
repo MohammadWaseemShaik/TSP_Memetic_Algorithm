@@ -1,8 +1,7 @@
 import random
 
-def mutate(ind, mutation_rate=0.2):
-    n = len(ind)
+def mutate_swap(ind, mutation_rate=0.2):
     if random.random() < mutation_rate:
-        i, j = random.sample(range(n), 2)
+        i, j = random.sample(range(len(ind)), 2)
         ind[i], ind[j] = ind[j], ind[i]
     return ind
